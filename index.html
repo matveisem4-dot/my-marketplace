@@ -3,122 +3,140 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DevStore — Маркетплейс проектов</title>
+  <title>Play Store</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="background-glow"></div>
-  
-  <div class="container">
-    <header class="header">
-      <div class="logo">
-        <span class="logo-icon">🚀</span>
-        <h2>DevStore</h2>
+  <div id="toast-container" class="toast-container"></div>
+
+  <div class="app-layout">
+    <!-- Шапка в стиле Telegram -->
+    <header class="tg-header">
+      <div class="header-left">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="logo-info">
+          <h2>Play Store</h2>
+          <span class="online-status">онлайн</span>
+        </div>
       </div>
       <div id="user-info" class="user-badge hidden">
+        <button onclick="toggleSettingsModal()" class="btn-icon-head" title="Настройки ключа GitHub">⚙️</button>
         <span id="user-email-display"></span>
         <button onclick="logout()" class="btn-logout">Выйти</button>
       </div>
     </header>
 
-    <!-- Настройка API -->
-    <div id="config-section" class="card card-glow">
-      <div class="card-header">
-        <h3>⚙️ Настройка интеграции GitHub</h3>
-        <p>Укажите репозиторий и токен для работы базы данных на GitHub Issues</p>
-      </div>
-      <div class="form-group">
-        <label>Владелец репозитория (username)</label>
-        <input type="text" id="gh-owner" placeholder="matveisem4-dot">
-      </div>
-      <div class="form-group">
-        <label>Название репозитория</label>
-        <input type="text" id="gh-repo" placeholder="my-marketplace">
-      </div>
-      <div class="form-group">
-        <label>GitHub Personal Access Token (PAT)</label>
-        <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx">
-      </div>
-      <div class="form-group">
-        <label>Email Администратора</label>
-        <input type="email" id="admin-email-input" placeholder="admin@domain.com">
-      </div>
-      <button onclick="saveConfig()" class="btn btn-primary">Сохранить настройки</button>
-    </div>
-
-    <!-- Авторизация -->
-    <div id="auth-section" class="card hidden">
-      <div class="card-header">
-        <h3>🔐 Вход в аккаунт</h3>
-        <p>Авторизация без пароля</p>
-      </div>
-      <div id="step-1">
-        <div class="form-group">
-          <label>Ваш Email</label>
-          <input type="email" id="auth-email" placeholder="name@example.com">
-        </div>
-        <button onclick="requestToken()" id="btn-request" class="btn btn-primary">Получить код в письме</button>
-      </div>
-      <div id="step-2" class="hidden">
-        <div class="status-alert">Код отправлен! Проверьте папку Входящие и Спам.</div>
-        <div class="form-group">
-          <label>Код из письма</label>
-          <input type="text" id="auth-token" placeholder="123456" maxlength="6">
-        </div>
-        <button onclick="verifyToken()" class="btn btn-success">Подтвердить и войти</button>
-      </div>
-    </div>
-
-    <!-- Дашборд -->
-    <div id="dashboard-section" class="hidden">
-      <!-- Баннер админа -->
-      <div id="admin-banner" class="card admin-card hidden">
-        <div class="admin-badge">ADMIN ACCESS</div>
-        <h3>Режим Администратора</h3>
-        <p>Вам доступны все заказы клиентов, общение в чатах и управление статусами задач.</p>
-      </div>
-
-      <!-- Создание заказа -->
-      <div id="client-controls" class="card hidden">
+    <main class="main-content">
+      <!-- Авторизация -->
+      <div id="auth-section" class="tg-card">
         <div class="card-header">
-          <h3>➕ Заказать разработку</h3>
-          <p>Опишите ваш проект, игру или веб-сайт</p>
+          <h3>Вход в Play Store</h3>
+          <p>Введите ваш Email для получения кода авторизации</p>
         </div>
-        <div class="form-group">
-          <label>Название проекта</label>
-          <input type="text" id="order-title" placeholder="Например: Телеграм бот или Сайт-портфолио">
+
+        <div id="step-1">
+          <div class="form-group">
+            <label for="auth-email">Электронная почта</label>
+            <input type="email" id="auth-email" placeholder="name@example.com">
+          </div>
+          <button onclick="requestToken()" id="btn-request" class="btn btn-primary">Получить код</button>
         </div>
-        <div class="form-group">
-          <label>Техническое задание / Описание</label>
-          <textarea id="order-desc" placeholder="Подробно опишите, что должен делать проект..."></textarea>
+
+        <div id="step-2" class="hidden">
+          <div class="status-alert">Код отправлен! Проверьте входящие или Спам.</div>
+          <div class="form-group">
+            <label for="auth-token">Код подтверждения</label>
+            <input type="text" id="auth-token" placeholder="123456" maxlength="6">
+          </div>
+          <button onclick="verifyToken()" id="btn-verify" class="btn btn-primary">Подтвердить и войти</button>
         </div>
-        <button onclick="createOrder()" class="btn btn-primary">Опубликовать заказ</button>
       </div>
 
-      <!-- Список заказов -->
-      <div class="card">
-        <div class="card-header-flex">
-          <h3>📦 Все заказы</h3>
-          <button onclick="loadOrders()" class="btn btn-secondary btn-sm">🔄 Обновить</button>
-        </div>
-        <div id="orders-list" class="orders-grid"></div>
-      </div>
-
-      <!-- Чат проекта -->
-      <div id="chat-card" class="card hidden">
-        <div class="card-header">
-          <h3 id="chat-title">Чат по проекту</h3>
-        </div>
+      <!-- Основная панель -->
+      <div id="dashboard-section" class="hidden">
         
-        <div id="messages-box" class="chat-messages"></div>
-
-        <div class="chat-input-wrapper">
-          <input type="text" id="chat-input" placeholder="Напишите сообщение..." onkeydown="if(event.key==='Enter') sendMessage()">
-          <button onclick="sendMessage()" class="btn btn-primary">Отправить</button>
+        <!-- Панель Администратора -->
+        <div id="admin-banner" class="tg-card admin-card hidden">
+          <div class="admin-badge">ADMIN</div>
+          <h3>Режим Администратора</h3>
+          <p>Вам доступны заказы и чаты всех пользователей</p>
         </div>
+
+        <!-- Создание заказа -->
+        <div id="client-controls" class="tg-card hidden">
+          <div class="card-header">
+            <h3>Создать новый заказ</h3>
+            <p>Заполните форму для отправки технического задания</p>
+          </div>
+          <div class="form-group">
+            <label for="order-title">Название проекта</label>
+            <input type="text" id="order-title" placeholder="Например: Мобильное приложение">
+          </div>
+          <div class="form-group">
+            <label for="order-desc">Техническое задание</label>
+            <textarea id="order-desc" placeholder="Подробно опишите функционал..."></textarea>
+          </div>
+          <button onclick="createOrder()" id="btn-create-order" class="btn btn-primary">Опубликовать заказ</button>
+        </div>
+
+        <!-- Список заказов -->
+        <div class="tg-card">
+          <div class="card-header-flex">
+            <h3>Все заказы</h3>
+            <button onclick="loadOrders()" class="btn-icon" title="Обновить">🔄</button>
+          </div>
+          <div id="orders-list" class="orders-list"></div>
+        </div>
+
+        <!-- Окно чата -->
+        <div id="chat-card" class="tg-card chat-card hidden">
+          <div class="chat-header">
+            <h4 id="chat-title">Чат по заказу</h4>
+          </div>
+          
+          <div id="messages-box" class="chat-messages"></div>
+
+          <div class="chat-input-bar">
+            <input type="text" id="chat-input" placeholder="Написать сообщение..." onkeydown="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()" class="btn-send">
+              <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Модальное окно настроек GitHub -->
+    <div id="settings-modal" class="modal-overlay hidden">
+      <div class="tg-card modal-card">
+        <div class="card-header-flex">
+          <h3>⚙️ Настройки GitHub API</h3>
+          <button onclick="toggleSettingsModal()" class="btn-icon">✖</button>
+        </div>
+        <p style="color:var(--tg-muted); font-size:0.85rem; margin-bottom:12px;">
+          Данные автоматически синхронизируются с вашей базов Firebase.
+        </p>
+        <div class="form-group">
+          <label for="cfg-owner">GitHub Owner (Логин)</label>
+          <input type="text" id="cfg-owner" placeholder="matveisem4-dot">
+        </div>
+        <div class="form-group">
+          <label for="cfg-repo">GitHub Repo (Репозиторий)</label>
+          <input type="text" id="cfg-repo" placeholder="my-marketplace">
+        </div>
+        <div class="form-group">
+          <label for="cfg-token">GitHub Personal Access Token</label>
+          <input type="password" id="cfg-token" placeholder="ghp_xxxxxxxxxxxx">
+        </div>
+        <button onclick="saveSettings()" id="btn-save-cfg" class="btn btn-primary">Сохранить настройки в Firebase</button>
       </div>
     </div>
   </div>
