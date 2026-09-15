@@ -1,8 +1,14 @@
 name: Send Verification Email
 
 on:
-  repository_dispatch:
-    types: [send_verification]
+  workflow_dispatch:
+    inputs:
+      to_email:
+        description: 'Email получателя'
+        required: true
+      token:
+        description: 'Код подтверждения'
+        required: true
 
 jobs:
   send-mail:
@@ -16,10 +22,10 @@ jobs:
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: Код авторизации на платформе
-          to: ${{ github.event.client_payload.to_email }}
+          to: ${{ github.event.inputs.to_email }}
           from: Marketplace Support
           body: |
             Здравствуйте!
 
-            Ваш код подтверждения для входа на сайт:
-            ${{ github.event.client_payload.token }}
+            Ваш код подтверждения для входа на маркетплейс:
+            ${{ github.event.inputs.token }}
