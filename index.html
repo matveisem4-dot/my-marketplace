@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Маркетплейс Проектов (Pure GitHub)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Разработка Проектов и Игр</h1>
+      <div id="user-info" class="hidden">
+        <span id="user-email-display"></span>
+        <button onclick="logout()" class="btn-alt">Выйти</button>
+      </div>
+    </header>
+
+    <!-- Настройка GitHub подключения -->
+    <div id="config-section" class="card">
+      <h2>Настройка подключения GitHub</h2>
+      <p><small>Введите ваш Fine-Grained GitHub Token с правами `Contents` и `Issues` (для работы API без бэкенда):</small></p>
+      <input type="text" id="gh-owner" placeholder="Владелец репозитория (username)">
+      <input type="text" id="gh-repo" placeholder="Имя репозитория (my-marketplace)">
+      <input type="password" id="gh-token" placeholder="GitHub Personal Access Token">
+      <input type="email" id="admin-email-input" placeholder="Email администратора">
+      <button onclick="saveConfig()">Сохранить конфигурацию</button>
+    </div>
+
+    <!-- Авторизация -->
+    <div id="auth-section" class="card hidden">
+      <h2>Авторизация по Email</h2>
+      <div id="step-1">
+        <input type="email" id="auth-email" placeholder="Введите ваш email">
+        <button onclick="requestToken()">Получить код (через GitHub Actions)</button>
+      </div>
+      <div id="step-2" class="hidden">
+        <p>Письмо с кодом отправлено на почту. Введите его ниже:</p>
+        <input type="text" id="auth-token" placeholder="6-значный код">
+        <button onclick="verifyToken()">Войти</button>
+      </div>
+    </div>
+
+    <!-- Панель управления -->
+    <div id="dashboard-section" class="hidden">
+      <div id="admin-banner" class="card admin-box hidden">
+        <h3>Вы вошли как Администратор</h3>
+        <p>Вам открыт полный доступ ко всем заказам клиентов.</p>
+      </div>
+
+      <div id="client-controls" class="card hidden">
+        <h3>Создать заказ</h3>
+        <input type="text" id="order-title" placeholder="Название проекта">
+        <textarea id="order-desc" placeholder="Описание проекта"></textarea>
+        <button onclick="createOrder()">Создать заказ</button>
+      </div>
+
+      <div class="card">
+        <h3>Список заказов</h3>
+        <button onclick="loadOrders()" class="btn-secondary">Обновить список</button>
+        <div id="orders-list"></div>
+      </div>
+
+      <!-- Чат -->
+      <div id="chat-card" class="card hidden">
+        <h3 id="chat-title">Чат по проекту</h3>
+        <div id="messages-box"></div>
+        <div class="chat-input-row">
+          <input type="text" id="chat-input" placeholder="Введите сообщение...">
+          <button onclick="sendMessage()">Отправить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
