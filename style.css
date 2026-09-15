@@ -1,0 +1,106 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #0d1117;
+  color: #c9d1d9;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #30363d;
+  padding-bottom: 10px;
+}
+
+.card {
+  background: #161b22;
+  border-radius: 6px;
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid #30363d;
+}
+
+.admin-box {
+  background: #211235;
+  border-color: #8957e5;
+}
+
+input, textarea, button {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #30363d;
+  background: #0d1117;
+  color: #c9d1d9;
+  box-sizing: border-box;
+}
+
+button {
+  background: #238636;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+}
+
+button:hover {
+  background: #2ea043;
+}
+
+.btn-secondary {
+  background: #30363d;
+  width: auto;
+}
+
+.btn-alt {
+  background: #da3633;
+  width: auto;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.order-item {
+  border-bottom: 1px solid #30363d;
+  padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-item button {
+  width: auto;
+}
+
+#messages-box {
+  height: 200px;
+  overflow-y: auto;
+  border: 1px solid #30363d;
+  padding: 10px;
+  background: #0d1117;
+  margin-bottom: 10px;
+}
+
+.msg {
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  background: #21262d;
+  border-radius: 4px;
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 10px;
+}
+
+.chat-input-row button {
+  width: 120px;
+}
