@@ -1,146 +1,365 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Play Store</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 Школьный Журнал</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <div id="toast-container" class="toast-container"></div>
 
-  <div class="app-layout">
-    <!-- Шапка в стиле Telegram -->
-    <header class="tg-header">
-      <div class="header-left">
-        <div class="logo-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-          </svg>
+    <!-- ===== LOADING SCREEN ===== -->
+    <section id="loading-screen" class="screen">
+        <div class="loader-wrapper">
+            <div class="spinner"></div>
+            <p class="loader-text">Загрузка...</p>
         </div>
-        <div class="logo-info">
-          <h2>Play Store</h2>
-          <span class="online-status">онлайн</span>
+    </section>
+
+    <!-- ===== ROLE SELECTION ===== -->
+    <section id="screen-role-select" class="screen hidden">
+        <div class="role-select-wrapper">
+            <h1 class="app-logo">📚 Школьный Журнал</h1>
+            <p class="app-subtitle">Выберите вашу роль для входа в систему</p>
+            <div class="role-cards">
+                <div class="role-card glass-card" data-role="teacher">
+                    <div class="role-emoji">🧑‍🏫</div>
+                    <i class="fas fa-chalkboard-teacher role-icon"></i>
+                    <h2>Учитель</h2>
+                    <p>Управление классами, оценками и расписанием</p>
+                </div>
+                <div class="role-card glass-card" data-role="student">
+                    <div class="role-emoji">🧑‍🎓</div>
+                    <i class="fas fa-user-graduate role-icon"></i>
+                    <h2>Ученик</h2>
+                    <p>Просмотр оценок, расписания и домашних заданий</p>
+                </div>
+                <div class="role-card glass-card" data-role="parent">
+                    <div class="role-emoji">👨‍👩‍👧</div>
+                    <i class="fas fa-people-roof role-icon"></i>
+                    <h2>Родитель</h2>
+                    <p>Контроль успеваемости и домашних заданий ребёнка</p>
+                </div>
+            </div>
         </div>
-      </div>
-      <div id="user-info" class="user-badge hidden">
-        <button onclick="toggleSettingsModal()" class="btn-icon-head" title="Настройки ключа GitHub">⚙️</button>
-        <span id="user-email-display"></span>
-        <button onclick="logout()" class="btn-logout">Выйти</button>
-      </div>
-    </header>
+    </section>
 
-    <main class="main-content">
-      <!-- Авторизация -->
-      <div id="auth-section" class="tg-card">
-        <div class="card-header">
-          <h3>Вход в Play Store</h3>
-          <p>Введите ваш Email для получения кода авторизации</p>
-        </div>
-
-        <div id="step-1">
-          <div class="form-group">
-            <label for="auth-email">Электронная почта</label>
-            <input type="email" id="auth-email" placeholder="name@example.com">
-          </div>
-          <button onclick="requestToken()" id="btn-request" class="btn btn-primary">Получить код</button>
-        </div>
-
-        <div id="step-2" class="hidden">
-          <div class="status-alert">Код отправлен! Проверьте входящие или Спам.</div>
-          <div class="form-group">
-            <label for="auth-token">Код подтверждения</label>
-            <input type="text" id="auth-token" placeholder="123456" maxlength="6">
-          </div>
-          <button onclick="verifyToken()" id="btn-verify" class="btn btn-primary">Подтвердить и войти</button>
-        </div>
-      </div>
-
-      <!-- Основная панель -->
-      <div id="dashboard-section" class="hidden">
-        
-        <!-- Панель Администратора -->
-        <div id="admin-banner" class="tg-card admin-card hidden">
-          <div class="admin-badge">ADMIN</div>
-          <h3>Режим Администратора</h3>
-          <p>Вам доступны заказы и чаты всех пользователей</p>
-        </div>
-
-        <!-- Создание заказа -->
-        <div id="client-controls" class="tg-card hidden">
-          <div class="card-header">
-            <h3>Создать новый заказ</h3>
-            <p>Заполните форму для отправки технического задания</p>
-          </div>
-          <div class="form-group">
-            <label for="order-title">Название проекта</label>
-            <input type="text" id="order-title" placeholder="Например: Мобильное приложение">
-          </div>
-          <div class="form-group">
-            <label for="order-desc">Техническое задание</label>
-            <textarea id="order-desc" placeholder="Подробно опишите функционал..."></textarea>
-          </div>
-          <button onclick="createOrder()" id="btn-create-order" class="btn btn-primary">Опубликовать заказ</button>
-        </div>
-
-        <!-- Список заказов -->
-        <div class="tg-card">
-          <div class="card-header-flex">
-            <h3>Все заказы</h3>
-            <button onclick="loadOrders()" class="btn-icon" title="Обновить">🔄</button>
-          </div>
-          <div id="orders-list" class="orders-list"></div>
-        </div>
-
-        <!-- Окно чата -->
-        <div id="chat-card" class="tg-card chat-card hidden">
-          <div class="chat-header">
-            <h4 id="chat-title">Чат по заказу</h4>
-          </div>
-          
-          <div id="messages-box" class="chat-messages"></div>
-
-          <div class="chat-input-bar">
-            <input type="text" id="chat-input" placeholder="Написать сообщение..." onkeydown="if(event.key==='Enter') sendMessage()">
-            <button onclick="sendMessage()" class="btn-send">
-              <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    <!-- ===== AUTH SCREEN ===== -->
+    <section id="screen-auth" class="screen hidden">
+        <div class="auth-wrapper">
+            <button id="btn-auth-back" class="btn-back glass-card" title="Назад">
+                <i class="fas fa-arrow-left"></i>
             </button>
-          </div>
-        </div>
+            <div class="auth-card glass-card">
+                <h2 id="auth-title">Вход</h2>
 
-      </div>
-    </main>
+                <!-- LOGIN FORM -->
+                <form id="auth-form-login" autocomplete="off">
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="login-email" class="form-input" placeholder="example@mail.ru" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Пароль</label>
+                        <input type="password" id="login-password" class="form-input" placeholder="Введите пароль" required>
+                    </div>
+                    <button type="submit" id="btn-login" class="btn-primary btn-full">
+                        <i class="fas fa-sign-in-alt"></i> Войти
+                    </button>
+                    <p class="auth-link" id="link-to-register">Нет аккаунта? <span>Зарегистрироваться</span></p>
+                </form>
 
-    <!-- Модальное окно настроек GitHub -->
-    <div id="settings-modal" class="modal-overlay hidden">
-      <div class="tg-card modal-card">
-        <div class="card-header-flex">
-          <h3>⚙️ Настройки GitHub API</h3>
-          <button onclick="toggleSettingsModal()" class="btn-icon">✖</button>
+                <!-- REGISTER FORM -->
+                <form id="auth-form-register" class="hidden" autocomplete="off">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Имя</label>
+                        <input type="text" id="reg-name" class="form-input" placeholder="Ваше полное имя" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="reg-email" class="form-input" placeholder="example@mail.ru" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Пароль</label>
+                        <input type="password" id="reg-password" class="form-input" placeholder="Минимум 6 символов" required>
+                    </div>
+
+                    <!-- Teacher-specific fields -->
+                    <div id="teacher-reg-fields" class="hidden">
+                        <div class="form-group">
+                            <label><i class="fas fa-key"></i> Секретный код учителя</label>
+                            <input type="text" id="reg-secret-code" class="form-input" placeholder="Введите секретный код">
+                        </div>
+                    </div>
+
+                    <!-- Parent-specific fields -->
+                    <div id="parent-reg-fields" class="hidden">
+                        <div class="form-group">
+                            <label><i class="fas fa-link"></i> Код ученика</label>
+                            <input type="text" id="reg-child-code" class="form-input" placeholder="Код ученика для привязки">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btn-register" class="btn-primary btn-full">
+                        <i class="fas fa-user-plus"></i> Зарегистрироваться
+                    </button>
+                    <p class="auth-link" id="link-to-login">Уже есть аккаунт? <span>Войти</span></p>
+                </form>
+            </div>
         </div>
-        <p style="color:var(--tg-muted); font-size:0.85rem; margin-bottom:12px;">
-          Данные автоматически синхронизируются с вашей базов Firebase.
-        </p>
-        <div class="form-group">
-          <label for="cfg-owner">GitHub Owner (Логин)</label>
-          <input type="text" id="cfg-owner" placeholder="matveisem4-dot">
+    </section>
+
+    <!-- ===== TEACHER DASHBOARD ===== -->
+    <section id="screen-teacher" class="screen hidden">
+        <div class="dashboard">
+            <!-- Header -->
+            <header class="dashboard-header glass-card">
+                <div class="header-left">
+                    <h1>📚 Школьный Журнал</h1>
+                </div>
+                <div class="header-right">
+                    <span class="user-badge"><i class="fas fa-chalkboard-teacher"></i> <span id="teacher-user-name"></span></span>
+                    <button id="btn-teacher-logout" class="btn-logout" title="Выйти">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Tabs -->
+            <nav class="tab-nav">
+                <button class="tab-btn active" data-tab="classes" id="teacher-tab-classes">
+                    <i class="fas fa-school"></i> Классы
+                </button>
+                <button class="tab-btn" data-tab="journal" id="teacher-tab-journal">
+                    <i class="fas fa-book-open"></i> Журнал
+                </button>
+                <button class="tab-btn" data-tab="schedule" id="teacher-tab-schedule">
+                    <i class="fas fa-calendar-alt"></i> Расписание
+                </button>
+                <button class="tab-btn" data-tab="homework" id="teacher-tab-homework">
+                    <i class="fas fa-pencil-alt"></i> Дом. задания
+                </button>
+            </nav>
+
+            <!-- Tab Contents -->
+            <!-- CLASSES TAB -->
+            <div class="tab-content active" id="teacher-content-classes">
+                <div class="content-card glass-card">
+                    <h3><i class="fas fa-plus-circle"></i> Создать класс</h3>
+                    <div class="form-row">
+                        <input type="text" id="input-class-name" class="form-input" placeholder="Название класса, напр. 5А">
+                        <button id="btn-create-class" class="btn-primary"><i class="fas fa-plus"></i> Создать</button>
+                    </div>
+                </div>
+
+                <div class="content-card glass-card">
+                    <h3><i class="fas fa-book"></i> Предметы</h3>
+                    <div class="form-row">
+                        <input type="text" id="input-subject-name" class="form-input" placeholder="Новый предмет">
+                        <button id="btn-add-subject" class="btn-primary"><i class="fas fa-plus"></i> Добавить</button>
+                    </div>
+                    <div id="subjects-list" class="tags-list"></div>
+                </div>
+
+                <div id="classes-list" class="cards-grid"></div>
+
+                <!-- Students section (shown when class is selected) -->
+                <div id="students-section" class="hidden">
+                    <div class="content-card glass-card">
+                        <h3><i class="fas fa-user-plus"></i> Добавить ученика в класс <span id="selected-class-name" class="badge"></span></h3>
+                        <div class="form-row">
+                            <input type="text" id="input-student-name" class="form-input" placeholder="ФИО ученика">
+                            <input type="email" id="input-student-email" class="form-input" placeholder="Email ученика">
+                            <input type="password" id="input-student-password" class="form-input" placeholder="Пароль (мин. 6 симв.)">
+                            <button id="btn-add-student" class="btn-primary"><i class="fas fa-user-plus"></i> Добавить</button>
+                        </div>
+                    </div>
+                    <div id="students-list" class="cards-grid"></div>
+                </div>
+            </div>
+
+            <!-- JOURNAL TAB -->
+            <div class="tab-content" id="teacher-content-journal">
+                <div class="content-card glass-card">
+                    <h3><i class="fas fa-book-open"></i> Журнал оценок</h3>
+                    <div class="form-row">
+                        <select id="select-journal-class" class="form-select">
+                            <option value="" disabled selected>Выберите класс</option>
+                        </select>
+                        <select id="select-journal-subject" class="form-select">
+                            <option value="" disabled selected>Выберите предмет</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="journal-table-container" class="glass-card table-wrapper"></div>
+            </div>
+
+            <!-- SCHEDULE TAB -->
+            <div class="tab-content" id="teacher-content-schedule">
+                <div class="content-card glass-card">
+                    <h3><i class="fas fa-calendar-alt"></i> Расписание</h3>
+                    <div class="form-row">
+                        <select id="select-schedule-class" class="form-select">
+                            <option value="" disabled selected>Выберите класс</option>
+                        </select>
+                    </div>
+                    <div class="day-nav">
+                        <button class="day-btn active" data-day="0">Пн</button>
+                        <button class="day-btn" data-day="1">Вт</button>
+                        <button class="day-btn" data-day="2">Ср</button>
+                        <button class="day-btn" data-day="3">Чт</button>
+                        <button class="day-btn" data-day="4">Пт</button>
+                        <button class="day-btn" data-day="5">Сб</button>
+                    </div>
+                </div>
+
+                <div id="schedule-lessons-list" class="lessons-list"></div>
+
+                <div class="content-card glass-card">
+                    <h3><i class="fas fa-plus-circle"></i> Добавить урок</h3>
+                    <div class="form-row">
+                        <input type="time" id="input-lesson-time" class="form-input">
+                        <select id="select-lesson-subject" class="form-select">
+                            <option value="" disabled selected>Предмет</option>
+                        </select>
+                        <input type="text" id="input-lesson-room" class="form-input" placeholder="Кабинет">
+                        <button id="btn-add-lesson" class="btn-primary"><i class="fas fa-plus"></i> Добавить</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HOMEWORK TAB -->
+            <div class="tab-content" id="teacher-content-homework">
+                <div class="content-card glass-card">
+                    <h3><i class="fas fa-pencil-alt"></i> Новое домашнее задание</h3>
+                    <div class="form-row">
+                        <select id="select-homework-class" class="form-select">
+                            <option value="" disabled selected>Выберите класс</option>
+                        </select>
+                        <select id="select-homework-subject" class="form-select">
+                            <option value="" disabled selected>Предмет</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="input-homework-text" class="form-input form-textarea" placeholder="Текст задания..." rows="3"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <input type="date" id="input-homework-due" class="form-input">
+                        <button id="btn-add-homework" class="btn-primary"><i class="fas fa-plus"></i> Задать</button>
+                    </div>
+                </div>
+                <div id="homework-list" class="cards-list"></div>
+            </div>
         </div>
-        <div class="form-group">
-          <label for="cfg-repo">GitHub Repo (Репозиторий)</label>
-          <input type="text" id="cfg-repo" placeholder="my-marketplace">
+    </section>
+
+    <!-- ===== STUDENT DASHBOARD ===== -->
+    <section id="screen-student" class="screen hidden">
+        <div class="dashboard">
+            <header class="dashboard-header glass-card">
+                <div class="header-left">
+                    <h1>📚 Школьный Журнал</h1>
+                </div>
+                <div class="header-right">
+                    <span class="user-badge"><i class="fas fa-user-graduate"></i> <span id="student-user-name"></span></span>
+                    <span class="badge" id="student-class-name"></span>
+                    <span class="badge badge-code" id="student-invite-code" title="Код для привязки родителя"></span>
+                    <button id="btn-student-logout" class="btn-logout" title="Выйти">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </header>
+
+            <nav class="tab-nav">
+                <button class="tab-btn active" data-tab="grades" id="student-tab-grades">
+                    <i class="fas fa-star"></i> Мои оценки
+                </button>
+                <button class="tab-btn" data-tab="schedule" id="student-tab-schedule">
+                    <i class="fas fa-calendar-alt"></i> Расписание
+                </button>
+                <button class="tab-btn" data-tab="homework" id="student-tab-homework">
+                    <i class="fas fa-pencil-alt"></i> Дом. задания
+                </button>
+            </nav>
+
+            <div class="tab-content active" id="student-content-grades">
+                <div id="student-grades-container" class="cards-list"></div>
+            </div>
+            <div class="tab-content" id="student-content-schedule">
+                <div class="content-card glass-card">
+                    <div class="day-nav">
+                        <button class="day-btn active" data-day="0">Пн</button>
+                        <button class="day-btn" data-day="1">Вт</button>
+                        <button class="day-btn" data-day="2">Ср</button>
+                        <button class="day-btn" data-day="3">Чт</button>
+                        <button class="day-btn" data-day="4">Пт</button>
+                        <button class="day-btn" data-day="5">Сб</button>
+                    </div>
+                </div>
+                <div id="student-schedule-container" class="lessons-list"></div>
+            </div>
+            <div class="tab-content" id="student-content-homework">
+                <div id="student-homework-container" class="cards-list"></div>
+            </div>
         </div>
-        <div class="form-group">
-          <label for="cfg-token">GitHub Personal Access Token</label>
-          <input type="password" id="cfg-token" placeholder="ghp_xxxxxxxxxxxx">
+    </section>
+
+    <!-- ===== PARENT DASHBOARD ===== -->
+    <section id="screen-parent" class="screen hidden">
+        <div class="dashboard">
+            <header class="dashboard-header glass-card">
+                <div class="header-left">
+                    <h1>📚 Школьный Журнал</h1>
+                </div>
+                <div class="header-right">
+                    <span class="user-badge"><i class="fas fa-people-roof"></i> <span id="parent-user-name"></span></span>
+                    <span class="badge" id="parent-child-info"></span>
+                    <button id="btn-parent-logout" class="btn-logout" title="Выйти">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </header>
+
+            <nav class="tab-nav">
+                <button class="tab-btn active" data-tab="grades" id="parent-tab-grades">
+                    <i class="fas fa-star"></i> Оценки ребёнка
+                </button>
+                <button class="tab-btn" data-tab="homework" id="parent-tab-homework">
+                    <i class="fas fa-pencil-alt"></i> Дом. задания
+                </button>
+            </nav>
+
+            <div class="tab-content active" id="parent-content-grades">
+                <div id="parent-grades-container" class="cards-list"></div>
+            </div>
+            <div class="tab-content" id="parent-content-homework">
+                <div id="parent-homework-container" class="cards-list"></div>
+            </div>
         </div>
-        <button onclick="saveSettings()" id="btn-save-cfg" class="btn btn-primary">Сохранить настройки в Firebase</button>
-      </div>
+    </section>
+
+    <!-- ===== MODAL ===== -->
+    <div id="modal-overlay" class="hidden">
+        <div id="modal-content" class="glass-card">
+            <button id="modal-close" class="btn-modal-close"><i class="fas fa-times"></i></button>
+            <h3 id="modal-title"></h3>
+            <div id="modal-body"></div>
+        </div>
     </div>
-  </div>
 
-  <script src="app.js"></script>
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div id="toast-container"></div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/teacher.js"></script>
+    <script src="js/student.js"></script>
+    <script src="js/parent.js"></script>
 </body>
 </html>
